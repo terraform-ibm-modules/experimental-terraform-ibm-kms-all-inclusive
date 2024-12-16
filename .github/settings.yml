@@ -15,12 +15,12 @@ repository:
   # By changing this field, you rename the repository.
 
   # Uncomment this name property and set the name to the current repo name.
-  name: "terraform-ibm-kms-all-inclusive"
+  name: "experimental-terraform-ibm-kms-all-inclusive"
 
   # The description is displayed under the repository name on the
   # organization page and in the 'About' section of the repository.
 
   # Uncomment this description property
   # and update the description to the current repo description.
-  description: "Supports creating a Key Protect instance, KMS Key Rings and Keys."
-  topics: core-team, terraform, ibm-cloud, terraform-module, key-protect, kms, supported, graduated, deployable-architecture
+  description: "Experimental version of module creating a Key Protect instance, KMS Key Rings and Keys."
+  topics: terraform, ibm-cloud, terraform-module, key-protect, kms, deployable-architecture
