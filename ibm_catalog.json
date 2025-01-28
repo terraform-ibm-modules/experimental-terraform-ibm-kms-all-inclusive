@@ -196,6 +196,9 @@
                 "standard"
               ],
               "id": "63641cec-6093-4b4f-b7b0-98d2f4185cd6-global",
+              "ignore_auto_referencing": [
+                "*"
+              ],
               "input_mapping": [
                 {
                   "dependency_output": "workload_resource_group_name",
@@ -208,7 +211,7 @@
               ],
               "optional": true,
               "on_by_default": true,
-              "version": "^1.11.6"
+              "version": "^v1.18.0"
             }
           ],
           "dependency_version_2": true
