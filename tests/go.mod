@@ -1,4 +1,4 @@
-module github.com/terraform-ibm-modules/terraform-ibm-kms-all-inclusive
+module github.com/terraform-ibm-modules/experimental-terraform-ibm-kms-all-inclusive
 
 go 1.22.4
 
