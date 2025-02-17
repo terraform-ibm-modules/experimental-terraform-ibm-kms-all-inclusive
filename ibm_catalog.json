@@ -66,16 +66,29 @@
               "key": "ibmcloud_api_key"
             },
             {
+              "key": "provider_visibility",
+              "options": [
+                {
+                  "displayname": "private",
+                  "value": "private"
+                },
+                {
+                  "displayname": "public",
+                  "value": "public"
+                },
+                {
+                  "displayname": "public-and-private",
+                  "value": "public-and-private"
+                }
+              ]
+            },
+            {
               "key": "use_existing_resource_group",
               "required": false
             },
             {
               "key": "resource_group_name",
               "required": false
-            },
-            {
-              "key": "prefix",
-              "required": true
             },
             {
               "key": "region",
@@ -124,6 +137,11 @@
               ]
             },
             {
+              "key": "prefix",
+              "required": true,
+              "description": "The prefix to add to all resources that this solution creates. To not use any prefix value, you can enter the string `__NULL__`."
+            },
+            {
               "key": "key_protect_instance_name"
             },
             {
@@ -163,6 +181,9 @@
             },
             {
               "key": "keys"
+            },
+            {
+              "key": "cbr_rules"
             }
           ],
           "architecture": {
