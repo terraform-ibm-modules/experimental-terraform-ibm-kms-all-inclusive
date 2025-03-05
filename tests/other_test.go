@@ -18,9 +18,14 @@ func TestRunBasicExample(t *testing.T) {
 		ResourceGroup: resourceGroup,
 		TerraformVars: map[string]interface{}{
 			"access_tags": permanentResources["accessTags"],
-			"prefix":      "kms-all-inc-basic",
 		},
 	})
+
+	terraformVars := map[string]interface{}{
+		"prefix": options.Prefix,
+	}
+
+	options.TerraformVars = terraformVars
 	output, err := options.RunTestConsistency()
 	assert.Nil(t, err, "This should not have errored")
 	assert.NotNil(t, output, "Expected some output")
@@ -37,7 +42,7 @@ func TestRunExistingResourcesExample(t *testing.T) {
 
 	terraformVars := map[string]interface{}{
 		"existing_kms_instance_crn": permanentResources["hpcs_south_crn"],
-		"prefix":                    "kp-all-inc-exist",
+		"prefix":                    options.Prefix,
 	}
 	options.TerraformVars = terraformVars
 
