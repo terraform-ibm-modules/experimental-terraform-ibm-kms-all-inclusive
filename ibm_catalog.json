@@ -41,7 +41,7 @@
         {
           "label": "Standard",
           "name": "standard",
-          "install_type": "extension",
+          "install_type": "fullstack",
           "working_directory": "solutions/standard",
           "compliance": {
             "authority": "scc-v3",
@@ -66,29 +66,9 @@
               "key": "ibmcloud_api_key"
             },
             {
-              "key": "provider_visibility",
-              "options": [
-                {
-                  "displayname": "private",
-                  "value": "private"
-                },
-                {
-                  "displayname": "public",
-                  "value": "public"
-                },
-                {
-                  "displayname": "public-and-private",
-                  "value": "public-and-private"
-                }
-              ]
-            },
-            {
-              "key": "use_existing_resource_group",
-              "required": false
-            },
-            {
-              "key": "resource_group_name",
-              "required": false
+              "key": "prefix",
+              "required": true,
+              "description": "The prefix to add to all resources that this solution creates (e.g `prod`, `test`, `dev`). To not use any prefix value, you can enter the string `__NULL__`."
             },
             {
               "key": "region",
@@ -137,9 +117,29 @@
               ]
             },
             {
-              "key": "prefix",
-              "required": true,
-              "description": "The prefix to add to all resources that this solution creates. To not use any prefix value, you can enter the string `__NULL__`."
+              "key": "provider_visibility",
+              "options": [
+                {
+                  "displayname": "private",
+                  "value": "private"
+                },
+                {
+                  "displayname": "public",
+                  "value": "public"
+                },
+                {
+                  "displayname": "public-and-private",
+                  "value": "public-and-private"
+                }
+              ]
+            },
+            {
+              "key": "use_existing_resource_group",
+              "required": true
+            },
+            {
+              "key": "resource_group_name",
+              "required": true
             },
             {
               "key": "key_protect_instance_name"
@@ -156,6 +156,9 @@
                   "value": "private-only"
                 }
               ]
+            },
+            {
+              "key": "rotation_interval_month"
             },
             {
               "key": "resource_tags"
@@ -231,6 +234,9 @@
               "on_by_default": true,
               "version": "^1.11.6"
             }
+          ],
+          "ignore_auto_referencing": [
+            "*"
           ],
           "dependency_version_2": true
         }
