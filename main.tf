@@ -11,6 +11,7 @@ locals {
 
   parsed_existing_kms_instance_crn = var.existing_kms_instance_crn != null ? split(":", var.existing_kms_instance_crn) : []
   existing_kms_instance_guid       = length(local.parsed_existing_kms_instance_crn) > 0 ? local.parsed_existing_kms_instance_crn[7] : null
+  existing_kms_account_id          = length(local.parsed_existing_kms_instance_crn) > 0 ? split("/", local.parsed_existing_kms_instance_crn[6])[1] : null
 
   # variable validation around new instance vs existing
   instance_validate_condition = var.create_key_protect_instance && local.existing_kms_instance_guid != null
@@ -26,6 +27,9 @@ locals {
 
   # set key_protect_guid as either the ID of the passed in name of instance or the one created by this module
   kms_guid = var.create_key_protect_instance ? module.key_protect[0].key_protect_guid : local.existing_kms_instance_guid
+
+  # set kms_account_id as either the ID of the passed in instance or the one created by this module
+  kms_account_id = var.create_key_protect_instance ? module.key_protect[0].key_protect_account_id : local.existing_kms_account_id
 
   # set key_protect_crn as either the crn of the passed in name of instance or the one created by this module
   kms_crn = var.create_key_protect_instance ? module.key_protect[0].key_protect_crn : var.existing_kms_instance_crn
@@ -50,7 +54,7 @@ locals {
 module "key_protect" {
   count                             = var.create_key_protect_instance ? 1 : 0
   source                            = "terraform-ibm-modules/key-protect/ibm"
-  version                           = "2.8.6"
+  version                           = "2.10.0"
   key_protect_name                  = var.key_protect_instance_name
   region                            = var.region
   allowed_network                   = var.key_protect_allowed_network
@@ -64,6 +68,7 @@ module "key_protect" {
   dual_auth_delete_enabled          = var.dual_auth_delete_enabled
   key_create_import_access_enabled  = var.key_create_import_access_enabled
   key_create_import_access_settings = var.key_create_import_access_settings
+  cbr_rules                         = var.cbr_rules
 }
 
 ##############################################################################
@@ -118,7 +123,7 @@ locals {
 # Create Key Rings and Keys
 module "kms_keys" {
   source                   = "terraform-ibm-modules/kms-key/ibm"
-  version                  = "v1.2.4"
+  version                  = "v1.3.1"
   for_each                 = { for obj in local.key_ring_key_list : "${obj.key_ring_name}.${obj.key_name}" => obj }
   endpoint_type            = var.key_endpoint_type
   kms_instance_id          = local.kms_guid
@@ -138,7 +143,7 @@ moved {
 # Create Keys in existing Key Rings
 module "existing_key_ring_keys" {
   source                   = "terraform-ibm-modules/kms-key/ibm"
-  version                  = "v1.2.4"
+  version                  = "v1.3.1"
   for_each                 = { for obj in local.existing_key_ring_key_list : "existing-key-ring.${obj.key_name}" => obj }
   kms_instance_id          = local.kms_guid
   endpoint_type            = var.key_endpoint_type
@@ -154,42 +159,7 @@ module "existing_key_ring_keys" {
 # Context Based Restrictions
 ##############################################################################
 
-locals {
-  default_operations = [{
-    api_types = [
-      {
-        "api_type_id" : "crn:v1:bluemix:public:context-based-restrictions::::api-type:"
-      },
-      {
-        "api_type_id" : "crn:v1:bluemix:public:context-based-restrictions::::platform-api-type:"
-      }
-    ]
-  }]
-}
-
-module "cbr_rule" {
-  count            = length(var.cbr_rules)
-  source           = "terraform-ibm-modules/cbr/ibm//modules/cbr-rule-module"
-  version          = "1.28.0"
-  rule_description = var.cbr_rules[count.index].description
-  enforcement_mode = var.cbr_rules[count.index].enforcement_mode
-  rule_contexts    = var.cbr_rules[count.index].rule_contexts
-  resources = [{
-    attributes = [
-      {
-        name  = "accountId"
-        value = var.cbr_rules[count.index].account_id
-      },
-      {
-        name     = "serviceInstance"
-        value    = local.kms_guid
-        operator = "stringEquals"
-      },
-      {
-        name  = "serviceName"
-        value = "kms"
-      }
-    ]
-  }]
-  operations = var.cbr_rules[count.index].operations == null ? local.default_operations : var.cbr_rules[count.index].operations
+moved {
+  from = module.cbr_rule
+  to   = module.key_protect[0].module.cbr_rule
 }
