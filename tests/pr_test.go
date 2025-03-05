@@ -77,6 +77,7 @@ func TestRunUpgradeDASolution(t *testing.T) {
 
 	terraformVars := map[string]interface{}{
 		"resource_group_name":       options.Prefix,
+		"prefix":                    options.Prefix,
 		"kms_endpoint_type":         "public",
 		"provider_visibility":       "public",
 		"existing_kms_instance_crn": permanentResources["hpcs_south_crn"],
